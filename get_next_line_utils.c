@@ -6,58 +6,28 @@
 /*   By: hcduller <hcduller@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/14 15:44:03 by hcduller          #+#    #+#             */
-/*   Updated: 2021/06/15 14:36:53 by hcduller         ###   ########.fr       */
+/*   Updated: 2021/06/16 03:23:38 by hcduller         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-void	ft_bzero(void *s, size_t n);
-char	*ft_strchr(const char *s, int c);
 void	*ft_calloc(size_t count, size_t size);
 size_t	ft_strlen(const char *s);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 size_t	smaller(size_t a, size_t b);
 
-void	ft_bzero(void *s, size_t n)
-{
-	char	*p;
-
-	p = (char *)s;
-	while (n > 0)
-	{
-		*(p + --n) = (char)0;
-	}
-}
-
-char	*ft_strchr(const char *s, int c)
-{
-	char	*r;
-
-	r = (char *)s;
-	while (*r)
-	{
-		if (*r == (char)c)
-			return (r);
-		r++;
-		if (*r == (char)c)
-			return (r);
-		if (!*r)
-			return (0);
-	}
-	if (!*r && (char)c == 0)
-		return (r);
-	return (0);
-}
-
 void	*ft_calloc(size_t count, size_t size)
 {
 	void	*ptr;
+	char	*p;
 
 	ptr = malloc(count * size);
 	if (ptr)
 	{
-		ft_bzero(ptr, count * size);
+		p = (char *)ptr;
+		while (count > 0)
+			*(p + --count) = 0;
 		return (ptr);
 	}
 	return (0);
