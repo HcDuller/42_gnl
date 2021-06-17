@@ -4,7 +4,7 @@
 # include <stdlib.h>
 # include <stddef.h>
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 40
+#  define BUFFER_SIZE 1
 # endif
 
 void	*ft_calloc(size_t count, size_t size);
