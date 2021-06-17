@@ -6,7 +6,7 @@
 /*   By: hcduller <hcduller@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/14 15:44:01 by hcduller          #+#    #+#             */
-/*   Updated: 2021/06/17 12:02:03 by hcduller         ###   ########.fr       */
+/*   Updated: 2021/06/17 14:03:13 by hcduller         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,11 +64,11 @@ void	split_at_break(char **pre, char **pos)
 
 	i = 0;
 	j = 0;
-	free(*pos);
+	
 	while ((*pre)[i] && (*pre)[i] != '\n')
 		i++;
 	(*pre)[i] = '\0';
-	*pos = ft_calloc(BUFFER_SIZE + 1, 1);
+	ft_bzero(*pos, BUFFER_SIZE + 1);
 	i++;
 	while ((*pre)[i])
 	{

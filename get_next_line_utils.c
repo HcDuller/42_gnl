@@ -6,7 +6,7 @@
 /*   By: hcduller <hcduller@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/14 15:44:03 by hcduller          #+#    #+#             */
-/*   Updated: 2021/06/17 01:37:57 by hcduller         ###   ########.fr       */
+/*   Updated: 2021/06/17 13:41:42 by hcduller         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,11 @@ void	ft_bzero(void *s, size_t n);
 void	*ft_calloc(size_t count, size_t size)
 {
 	void	*ptr;
-	char	*p;
 
 	ptr = malloc(count * size);
 	if (ptr)
 	{
-		p = (char *)ptr;
-		while (count > 0)
-			*(p + --count) = 0;
+		ft_bzero(ptr, count * size);
 		return (ptr);
 	}
 	return (0);
