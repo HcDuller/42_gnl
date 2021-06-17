@@ -6,7 +6,7 @@
 /*   By: hcduller <hcduller@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/14 15:44:03 by hcduller          #+#    #+#             */
-/*   Updated: 2021/06/16 17:46:00 by hcduller         ###   ########.fr       */
+/*   Updated: 2021/06/16 19:43:13 by hcduller         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 void			*ft_calloc(size_t count, size_t size);
 size_t			ft_strlen(const char *s);
 char			*ft_substr(char const *s, unsigned int start, size_t len);
-static size_t	smaller(size_t a, size_t b);
 size_t			ft_strlen_custom(const char *s);
+static size_t	smaller(size_t a, size_t b);
 
 void	*ft_calloc(size_t count, size_t size)
 {
