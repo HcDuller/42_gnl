@@ -6,12 +6,11 @@
 /*   By: hcduller <hcduller@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/14 15:44:01 by hcduller          #+#    #+#             */
-/*   Updated: 2021/06/17 00:04:32 by hcduller         ###   ########.fr       */
+/*   Updated: 2021/06/17 00:05:23 by hcduller         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
 
 void	split_at_break(char **pre, char **pos);
 void	concat(char **line, char *buf);
