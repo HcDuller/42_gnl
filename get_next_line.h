@@ -10,6 +10,7 @@
 void	*ft_calloc(size_t count, size_t size);
 size_t	ft_strlen(const char *s);
 void	ft_bzero(void *s, size_t n);
+void	ft_free(void *p);
 
 int		get_next_line(int fd, char **line);
 

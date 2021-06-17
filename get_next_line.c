@@ -6,7 +6,7 @@
 /*   By: hcduller <hcduller@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/14 15:44:01 by hcduller          #+#    #+#             */
-/*   Updated: 2021/06/17 17:18:42 by hcduller         ###   ########.fr       */
+/*   Updated: 2021/06/17 18:18:28 by hcduller         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,18 +32,18 @@ int	get_next_line(int fd, char **line)
 		concat(&my_line, perm);
 		concat(&my_line, buf);
 		read_value = read(fd, buf, BUFFER_SIZE);
-		if(read_value == 0)
+		if (read_value == 0)
 		{
 			*line = my_line;
-			free(buf);
-			free(perm);
+			ft_free(buf);
+			ft_free(perm);
 			return (0);
 		}
-		if(read_value == -1)
+		if (read_value == -1)
 		{
-			free(buf);
-			free(perm);
-			free(my_line);
+			ft_free(buf);
+			ft_free(perm);
+			ft_free(my_line);
 			return (-1);
 		}
 	}
@@ -51,7 +51,7 @@ int	get_next_line(int fd, char **line)
 	split_at_break(&buf, &perm);
 	concat(&my_line, buf);
 	*line = my_line;
-	free(buf);
+	ft_free(buf);
 	return (1);
 }
 
@@ -87,7 +87,7 @@ void	concat(char **line, char *buf)
 			t[ls[2]] = buf[(ls[2] - ls[0])];
 			ls[2]++;
 		}
-		free(*line);
+		ft_free(*line);
 		*line = t;
 		ft_bzero(buf, ls[1]);
 	}
@@ -100,7 +100,6 @@ void	split_at_break(char **pre, char **pos)
 
 	i = 0;
 	j = 0;
-	
 	while ((*pre)[i] && (*pre)[i] != '\n')
 		i++;
 	(*pre)[i] = '\0';
@@ -124,7 +123,7 @@ int	ready_to_go(int fd, char **line, char **s_buf, char **d_buf)
 	*d_buf = (char *)ft_calloc(BUFFER_SIZE + 1, 1);
 	if (!*d_buf)
 	{
-		free(*s_buf);
+		ft_free(*s_buf);
 		return (0);
 	}
 	return (1);

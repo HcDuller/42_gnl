@@ -6,7 +6,7 @@
 /*   By: hcduller <hcduller@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/14 15:44:03 by hcduller          #+#    #+#             */
-/*   Updated: 2021/06/17 13:41:42 by hcduller         ###   ########.fr       */
+/*   Updated: 2021/06/17 18:17:21 by hcduller         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void	*ft_calloc(size_t count, size_t size);
 size_t	ft_strlen(const char *s);
 void	ft_bzero(void *s, size_t n);
+void	ft_free(void *p);
 
 void	*ft_calloc(size_t count, size_t size)
 {
@@ -34,7 +35,7 @@ size_t	ft_strlen(const char *s)
 	size_t	i;
 
 	i = 0;
-	if(s)
+	if (s)
 	{
 		while (s[i] && s[i] != '\0')
 		{
@@ -53,4 +54,10 @@ void	ft_bzero(void *s, size_t n)
 	{
 		*(p + --n) = (char)0;
 	}
+}
+
+void	ft_free(void *p)
+{
+	free(p);
+	p = NULL;
 }
