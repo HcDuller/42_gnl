@@ -6,16 +6,17 @@
 /*   By: hcduller <hcduller@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/14 15:44:01 by hcduller          #+#    #+#             */
-/*   Updated: 2021/06/16 23:31:04 by hcduller         ###   ########.fr       */
+/*   Updated: 2021/06/17 00:04:32 by hcduller         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-void	ft_bzero(void *s, size_t n);
+
 void	split_at_break(char **pre, char **pos);
 void	concat(char **line, char *buf);
 int		has_break(char *s);
+int		ready_to_go(int fd, char **line, char **s_buf, char **d_buf);
 
 int	has_break(char *s)
 {
@@ -56,6 +57,7 @@ void	concat(char **line, char *buf)
 		}
 		free(*line);
 		*line = t;
+		ft_bzero(buf, BUFFER_SIZE);
 	}
 }
 
@@ -79,15 +81,18 @@ void	split_at_break(char **pre, char **pos)
 	}
 }
 
-void	ft_bzero(void *s, size_t n)
+int	ready_to_go(int fd, char **line, char **s_buf, char **d_buf)
 {
-	char	*p;
-
-	p = (char *)s;
-	while (n > 0)
-	{
-		*(p + --n) = (char)0;
-	}
+	if (fd < 0 || BUFFER_SIZE < 1 || !line)
+		return (0);
+	if (!*s_buf)
+		*s_buf = ft_calloc(BUFFER_SIZE + 1, 1);
+	if (!*s_buf)
+		return (0);
+	*d_buf = ft_calloc(BUFFER_SIZE + 1, 1);
+	if (!*d_buf)
+		return (0);
+	return (1);
 }
 
 int	get_next_line(int fd, char **line)
@@ -96,22 +101,18 @@ int	get_next_line(int fd, char **line)
 	char		*buf;
 	int			read_value;
 
-	if (!perm)
-		perm = ft_calloc(BUFFER_SIZE + 1, 1);
-	buf = ft_calloc(BUFFER_SIZE + 1, 1);
+	if (!ready_to_go(fd, line, &perm, &buf))
+		return (-1);
 	while (!has_break(buf) && !has_break(perm))
 	{
 		concat(line, perm);
-		ft_bzero(perm, BUFFER_SIZE);
 		concat(line, buf);
-		ft_bzero(buf, BUFFER_SIZE);
 		read_value = read(fd, buf, BUFFER_SIZE);
 		if (read_value <= 0)
 		{
 			free(buf);
 			free(perm);
 			free(*line);
-			*line = NULL;
 			return (read_value);
 		}
 	}
