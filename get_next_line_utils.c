@@ -6,7 +6,7 @@
 /*   By: hcduller <hcduller@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/14 15:44:03 by hcduller          #+#    #+#             */
-/*   Updated: 2021/06/17 00:04:37 by hcduller         ###   ########.fr       */
+/*   Updated: 2021/06/17 01:37:57 by hcduller         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,12 @@ size_t	ft_strlen(const char *s)
 	size_t	i;
 
 	i = 0;
-	while (s[i] && s[i] != '\0')
+	if(s)
 	{
-		i++;
+		while (s[i] && s[i] != '\0')
+		{
+			i++;
+		}
 	}
 	return (i);
 }

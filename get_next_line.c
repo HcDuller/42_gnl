@@ -6,7 +6,7 @@
 /*   By: hcduller <hcduller@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/14 15:44:01 by hcduller          #+#    #+#             */
-/*   Updated: 2021/06/17 00:05:23 by hcduller         ###   ########.fr       */
+/*   Updated: 2021/06/17 12:02:03 by hcduller         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,6 @@ int		ready_to_go(int fd, char **line, char **s_buf, char **d_buf);
 
 int	has_break(char *s)
 {
-	int	c;
-
-	c = 0;
 	while (*s)
 	{
 		if (*s == '\n')
