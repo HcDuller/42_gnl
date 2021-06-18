@@ -6,125 +6,157 @@
 /*   By: hcduller <hcduller@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/14 15:44:01 by hcduller          #+#    #+#             */
-/*   Updated: 2021/06/17 18:18:28 by hcduller         ###   ########.fr       */
+/*   Updated: 2021/06/18 03:32:21 by hcduller         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-void	split_at_break(char **pre, char **pos);
-void	concat(char **line, char *buf);
-int		has_break(char *s);
-int		ready_to_go(int fd, char **line, char **s_buf, char **d_buf);
 
-int	get_next_line(int fd, char **line)
+int has_break(char *p)
 {
-	static char	*perm;
-	char		*my_line;
-	char		*buf;
-	int			read_value;
-
-	if (!ready_to_go(fd, line, &perm, &buf))
-		return (-1);
-	my_line = ft_calloc(1, 1);
-	while (!has_break(buf) && !has_break(perm))
+	while(*p)
 	{
-		concat(&my_line, perm);
-		concat(&my_line, buf);
-		read_value = read(fd, buf, BUFFER_SIZE);
-		if (read_value == 0)
-		{
-			*line = my_line;
-			ft_free(buf);
-			ft_free(perm);
-			return (0);
-		}
-		if (read_value == -1)
-		{
-			ft_free(buf);
-			ft_free(perm);
-			ft_free(my_line);
-			return (-1);
-		}
-	}
-	concat(&buf, perm);
-	split_at_break(&buf, &perm);
-	concat(&my_line, buf);
-	*line = my_line;
-	ft_free(buf);
-	return (1);
-}
-
-int	has_break(char *s)
-{
-	while (*s)
-	{
-		if (*s == '\n')
+		if ((unsigned char)*p++ == '\n')
 			return (1);
-		s++;
 	}
 	return (0);
 }
 
-void	concat(char **line, char *buf)
+char	*str_append_end(char *base, char *append)  //retorna new_malloced concatenades base_apend // da Free em base!
 {
-	size_t	ls[3];
-	char	*t;
+	char *new_str;
+	char *aux;
+	char *freer;
 
-	ls[0] = ft_strlen(*line);
-	ls[1] = ft_strlen(buf);
-	ls[2] = 0;
-	if (ls[0] + ls[1])
-	{
-		t = (char *)ft_calloc(ls[0] + ls[1] + 1, 1);
-		while (ls[2] < ls[0])
-		{
-			t[ls[2]] = (*line)[ls[2]];
-			ls[2]++;
-		}
-		while (ls[2] < ls[0] + ls[1])
-		{
-			t[ls[2]] = buf[(ls[2] - ls[0])];
-			ls[2]++;
-		}
-		ft_free(*line);
-		*line = t;
-		ft_bzero(buf, ls[1]);
-	}
+	new_str = (char *)ft_calloc(ft_strlen(base) + ft_strlen(append) + 1 ,1);
+	if (!new_str)
+		return (NULL);
+	aux = new_str;
+	freer = base;
+	while (*base)
+		*aux++ = *base++;
+	while (*append)
+		*aux++ = *append++;
+	free(freer);
+	freer = NULL;
+	return (new_str);
 }
 
-void	split_at_break(char **pre, char **pos)
+char	*str_pre_pend(char *base, char *pre_pen) //retorna new_malloced concatenades prepen_base // da Free em base!
 {
-	int	i;
-	int	j;
+	char *new_str;
+	char *aux;
+	char *freer;
 
-	i = 0;
-	j = 0;
-	while ((*pre)[i] && (*pre)[i] != '\n')
-		i++;
-	(*pre)[i] = '\0';
-	ft_bzero(*pos, BUFFER_SIZE + 1);
-	i++;
-	while ((*pre)[i])
-	{
-		(*pos)[j++] = (*pre)[i];
-		(*pre)[i++] = '\0';
-	}
+	new_str = (char *)ft_calloc(ft_strlen(base) + ft_strlen(pre_pen) + 1 ,1);
+	if (!new_str)
+		return (NULL);
+	aux = new_str;
+	freer = base;
+	while (*pre_pen)
+		*aux++ = *pre_pen++;
+	while (*base)
+		*aux++ = *base++;
+	free(freer);
+	freer = NULL;
+	return (new_str);
 }
 
-int	ready_to_go(int fd, char **line, char **s_buf, char **d_buf)
+char	*pre_break(char *str) // retorna new_malloced pre break!
 {
-	if (fd < 0 || BUFFER_SIZE < 1 || !line)
-		return (0);
-	if (!*s_buf)
-		*s_buf = (char *)ft_calloc(BUFFER_SIZE + 1, 1);
-	if (!*s_buf)
-		return (0);
-	*d_buf = (char *)ft_calloc(BUFFER_SIZE + 1, 1);
-	if (!*d_buf)
+	char	*aux;
+	char	*new_str;
+
+	aux = str;
+	while (*aux && *aux != '\n')
+		aux++;
+	aux = (char *)ft_calloc((aux - str) + 1 , 1);
+	new_str = aux;
+	if (!aux)
+	 return (NULL);
+	while (*str && *str != '\n')
+		*aux++ = *str++;
+	return (new_str);
+}
+
+char	*pos_break(char *str) // retorna new_malloced pos break!
+{
+	char	*break_index;
+	char	*aux;
+	char	*new_str;
+	int		size;
+
+	break_index = str;
+	aux = str;	
+	while (*break_index && *break_index != '\n')
+		break_index++;
+	while (*aux)
+		aux++;
+	if (aux - break_index == 0)
+		return ((char *)ft_calloc(1, 1));
+	size = (aux - break_index);
+	if(size > 0)
 	{
-		ft_free(*s_buf);
+		new_str = (char *)ft_calloc((aux - break_index) + 1, 1);
+		aux = new_str;
+		while (*++break_index)
+			*aux++ = *break_index;	
+	}
+	else
+	{
+		new_str = NULL;
+	}
+	return (new_str);
+}
+
+int	get_next_line(int fd, char **line)
+{
+	static char *perm;
+	char		*buf;
+	char		*my_line;
+	int			r_size;
+	
+	if (fd < 0 || !line)
+	{
+		if(perm)
+			free(perm);
+		return(-1);
+	}
+	if(!perm)
+		perm = (char *)ft_calloc(BUFFER_SIZE + 1, 1);
+	my_line = (char *)ft_calloc(1, 1);
+	my_line = str_pre_pend(my_line, perm);
+	free(perm);
+	perm = NULL;
+	buf = (char *)ft_calloc(BUFFER_SIZE + 1, 1);
+	r_size = 1;
+	while (r_size > 0 && !has_break(buf))
+	{
+		my_line = str_append_end(my_line, buf);
+		ft_bzero(buf, BUFFER_SIZE);
+		r_size = read(fd, buf, BUFFER_SIZE);
+		if (r_size == -1)
+		{
+			free(buf);
+			free(my_line);
+			*line = NULL;
+			return (-1);
+		}
+	}
+	if(r_size == 0)//ft_strlen(my_line) >= 0 always true
+	{
+		*line = my_line;
+		free(buf);
+		if(my_line[0] != '\0')
+			return (1);
 		return (0);
 	}
+	perm = pre_break(buf);
+	my_line = str_append_end(my_line, perm);
+	free(perm);
+	perm = pos_break(buf);
+	free(buf);
+	*line = my_line;
 	return (1);
 }

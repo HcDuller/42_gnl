@@ -4,12 +4,19 @@
 # include <stdlib.h>
 # include <stddef.h>
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 1
+#  define BUFFER_SIZE 42
 # endif
+
+typedef struct s_list
+{
+	void			*content;
+	struct s_list	*next;
+}	t_list;
 
 void	*ft_calloc(size_t count, size_t size);
 size_t	ft_strlen(const char *s);
 void	ft_bzero(void *s, size_t n);
+size_t	char_at(const char *s,char c);
 void	ft_free(void *p);
 
 int		get_next_line(int fd, char **line);
