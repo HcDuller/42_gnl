@@ -6,7 +6,7 @@
 /*   By: hcduller <hcduller@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/14 15:44:03 by hcduller          #+#    #+#             */
-/*   Updated: 2021/06/18 18:51:39 by hcduller         ###   ########.fr       */
+/*   Updated: 2021/06/21 16:24:29 by hcduller         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,24 @@
 
 void	*ft_calloc(size_t count, size_t size);
 size_t	ft_strlen(const char *s);
-void	ft_bzero(void *s, size_t n);
-void	str_clean(char *s);
+char	*pre_break(char *str);
+char	*pos_break(char *str);
+int		has_break(char *p);
 
 void	*ft_calloc(size_t count, size_t size)
 {
 	void	*ptr;
+	size_t	i;	
 
 	ptr = malloc(count * size);
 	if (ptr)
 	{
-		ft_bzero(ptr, count * size);
+		i = 0;
+		while (i < (count * size))
+		{
+			((char *)ptr)[i] = (char)0;
+			i++;
+		}		
 		return (ptr);
 	}
 	return (0);
@@ -45,19 +52,54 @@ size_t	ft_strlen(const char *s)
 	return (i);
 }
 
-void	ft_bzero(void *s, size_t n)
+char	*pre_break(char *str)
 {
-	char	*p;
+	char	*aux;
+	char	*new_str;
 
-	p = (char *)s;
-	while (n > 0)
-	{
-		*(p + --n) = (char)0;
-	}
+	aux = str;
+	while (*aux && *aux != '\n')
+		aux++;
+	aux = (char *)ft_calloc((aux - str) + 1, 1);
+	new_str = aux;
+	if (!aux)
+		return (NULL);
+	while (*str && *str != '\n')
+		*aux++ = *str++;
+	return (new_str);
 }
 
-void	str_clean(char *s)
+char	*pos_break(char *str)
 {
-	while (*s)
-		*s++ = '\0';
+	char	*break_index;
+	char	*aux;
+	char	*new_str;
+
+	break_index = str;
+	aux = str;
+	new_str = NULL;
+	while (*break_index && *break_index != '\n')
+		break_index++;
+	while (*aux)
+		aux++;
+	if ((aux - break_index) > 0)
+	{
+		new_str = (char *)ft_calloc((aux - break_index) + 1, 1);
+		aux = new_str;
+		while (*++break_index)
+			*aux++ = *break_index;
+	}
+	free(str);
+	return (new_str);
+}
+
+int	has_break(char *p)
+{
+	while (*p)
+	{
+		if ((unsigned char)*p == '\n')
+			return (1);
+		p++;
+	}
+	return (0);
 }

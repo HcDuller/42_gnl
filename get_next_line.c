@@ -6,24 +6,13 @@
 /*   By: hcduller <hcduller@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/14 15:44:01 by hcduller          #+#    #+#             */
-/*   Updated: 2021/06/18 18:49:01 by hcduller         ###   ########.fr       */
+/*   Updated: 2021/06/21 16:24:15 by hcduller         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-int	has_break(char *p)
-{
-	while (*p)
-	{
-		if ((unsigned char)*p == '\n')
-			return (1);
-		p++;
-	}
-	return (0);
-}
-
-char	*str_append(char *base, char *append)
+char	*str_append(char *base, char *append, int clean_append)
 {
 	char	*new_str;
 	char	*aux;
@@ -39,7 +28,12 @@ char	*str_append(char *base, char *append)
 		while (*base)
 			*aux++ = *base++;
 		while (*append)
-			*aux++ = *append++;
+		{
+			*aux++ = *append;
+			if (clean_append)
+				*append = (char)0;
+			append++;
+		}
 		free(freer);
 		return (new_str);
 	}
@@ -67,45 +61,48 @@ char	*str_pre_pend(char *base, char *pre)
 	return (base);
 }
 
-char	*pre_break(char *str)
+int	shoul_it_run(int fd, char **line, char **buf, char **t_buf)
 {
-	char	*aux;
-	char	*new_str;
-
-	aux = str;
-	while (*aux && *aux != '\n')
-		aux++;
-	aux = (char *)ft_calloc((aux - str) + 1, 1);
-	new_str = aux;
-	if (!aux)
-		return (NULL);
-	while (*str && *str != '\n')
-		*aux++ = *str++;
-	return (new_str);
+	if (fd < 0 || !line)
+		return (0);
+	if (!*buf)
+		*buf = (char *)ft_calloc(1, 1);
+	if (!*buf)
+		return (0);
+	*t_buf = (char *)ft_calloc(BUFFER_SIZE + 1, 1);
+	if (!*t_buf)
+	{
+		free(*buf);
+		return (0);
+	}
+	return (1);
 }
 
-char	*pos_break(char *str)
+int	str_handler(char **line, char **my_line, int r_size, char **readings)
 {
-	char	*break_index;
-	char	*aux;
-	char	*new_str;
-
-	break_index = str;
-	aux = str;
-	new_str = NULL;
-	while (*break_index && *break_index != '\n')
-		break_index++;
-	while (*aux)
-		aux++;
-	if ((aux - break_index) > 0)
+	if (r_size == -1)
 	{
-		new_str = (char *)ft_calloc((aux - break_index) + 1, 1);
-		aux = new_str;
-		while (*++break_index)
-			*aux++ = *break_index;
+		*line = NULL;
+		free(*readings);
+		free(*my_line);
+		return (-1);
 	}
-	free(str);
-	return (new_str);
+	if (r_size == 0)
+	{
+		free(*readings);
+		if (**my_line == 0)
+		{
+			*line = str_append(*my_line, "", 0);
+			*my_line = NULL;
+		}
+		else
+		{
+			*line = pre_break(*my_line);
+			*my_line = pos_break(*my_line);
+		}
+		return (0);
+	}
+	return (0);
 }
 
 int	get_next_line(int fd, char **line)
@@ -114,43 +111,19 @@ int	get_next_line(int fd, char **line)
 	char		*readings;
 	int			r_size;
 
-	if (fd < 0 || !line)
-	{
-		*line = (NULL);
-		return (-1);
+	if (shoul_it_run(fd, line, &my_line, &readings))
+	{	
+		while (!has_break(my_line))
+		{
+			r_size = read(fd, readings, BUFFER_SIZE);
+			if (r_size <= 0)
+				return (str_handler(line, &my_line, r_size, &readings));
+			my_line = str_append(my_line, readings, 1);
+		}
+		*line = pre_break(my_line);
+		my_line = pos_break(my_line);
+		free(readings);
+		return (1);
 	}
-	if (!my_line)
-		my_line = (char *)ft_calloc(1, 1);
-	readings = (char *)ft_calloc(BUFFER_SIZE + 1, 1);
-	while (!has_break(my_line))
-	{
-		r_size = read(fd, readings, BUFFER_SIZE);
-		if (r_size == -1)
-		{
-			*line = NULL;
-			free(readings);
-			free(my_line);
-			return (-1);
-		}
-		if (r_size == 0 && *my_line == 0)
-		{
-			*line = str_append(my_line, "");
-			my_line = NULL;
-			free(readings);
-			return (0);
-		}
-		if (r_size == 0 && !has_break(my_line))
-		{
-			*line = pre_break(my_line);
-			my_line = pos_break(my_line);
-			free(readings);
-			return (0);
-		}
-		my_line = str_append(my_line, readings);
-		str_clean(readings);
-	}
-	*line = pre_break(my_line);
-	my_line = pos_break(my_line);
-	free(readings);
-	return (1);
+	return (-1);
 }
