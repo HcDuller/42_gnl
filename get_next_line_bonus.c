@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hcduller <hcduller@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hde-camp <hde-camp@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/14 15:44:01 by hcduller          #+#    #+#             */
-/*   Updated: 2021/06/21 18:45:20 by hcduller         ###   ########.fr       */
+/*   Updated: 2021/06/24 12:35:55 by hde-camp         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*str_append(char *base, char *append, int clean_append)
 {
